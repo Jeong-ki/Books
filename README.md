@@ -1,3 +1,2 @@
 # Reading-Board
-Reading Board
-독서 게시판
+독서 게시판 만들기
