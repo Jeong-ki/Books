@@ -1,3 +1,70 @@
 body {
-  font-family: "Open Sans", sans-serif;
+  font-family: 'Open Sans', sans-serif;
+}
+.breadcrumb-item {
+  font-size: 0.8em !important;
+}
+.ellipsis{
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* 1 */
+}
+
+.board-table {
+  table-layout: fixed;
+}
+.board-table .date {
+  width: 100px;
+}
+.board-table .cate {
+  width: 70px;
+}
+
+.post-body{
+  white-space: pre-line; /* 2 */
+}
+.post-info{
+  font-size: 0.8em;
+}
+
+.select {
+  padding: 10px 0px;
+}
+.select input[type=radio]{
+  display: none;
+}
+.select input[type=radio]+label{
+  display: inline-block;
+  cursor: pointer;
+  height: 24px;
+  width: 90px;
+  border: 1px solid #333;
+  line-height: 24px;
+  text-align: center;
+  font-weight:bold;
+  font-size:13px;
+}
+.select input[type=radio]+label{
+  background-color: #fff;
+  color: #333;
+}
+.select input[type=radio]:checked+label{
+  background-color: #333;
+  color: #fff;
+}
+
+.category {
+  padding-right: 10px;
+}
+.bun{
+  padding-top: 8px;
+  padding-bottom: 10px;
+}
+.bunr {
+  background-color: #333;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 5px 5px 5px 5px;
 }

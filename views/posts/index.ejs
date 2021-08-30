@@ -8,14 +8,15 @@
 
     <div class="container mb-3">
 
-      <h2 class="mb-3">Board</h2>
+      <h2 class="mb-3">게시판</h2>
 
       <table class="board-table table table-sm border-bottom">
 
         <thead class="thead-light">
           <tr>
-            <th scope="col">Title</th>
-            <th scope="col" class="date">Date</th>
+            <th scope="col" class="cate">분류</th>
+            <th scope="col">제목</th>
+            <th scope="col" class="date">작성일</th>
           </tr>
         </thead>
 
@@ -27,6 +28,9 @@
           <% } %>
           <% posts.forEach(function(post) { %>
             <tr>
+              <td class="cate">
+                <span><%= post.category %></span>
+              </td>
               <td>
                 <a href="/posts/<%= post.id %>"><div class="ellipsis"><%= post.title %></div></a>
               </td>
@@ -40,7 +44,7 @@
       </table>
 
       <div>
-        <a class="btn btn-primary" href="/posts/create">New</a>
+        <a class="btn btn-primary" href="/posts/create">글쓰기</a>
       </div>
 
     </div>

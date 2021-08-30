@@ -10,28 +10,37 @@
 
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb p-1 pl-2 pr-2">
-          <li class="breadcrumb-item"><a href="/">Home</a></li>
-          <li class="breadcrumb-item"><a href="/posts">Board</a></li>
+          <li class="breadcrumb-item"><a href="/">홈</a></li>
+          <li class="breadcrumb-item"><a href="/posts">게시판</a></li>
           <li class="breadcrumb-item"><a href="/posts/<%= post.id %>"><%= post.title %></a></li>
-          <li class="breadcrumb-item active" aria-current="page">Edit Post</li>
+          <li class="breadcrumb-item active" aria-current="page">수정하기</li>
         </ol>
       </nav>
 
       <form action="/posts/<%= post.id %>?_method=put" method="post">
 
+        <div class="select">
+          <label class="category" for="title">카테고리</label>
+          <input type="radio" id="select" name="category" value="문학" <% if (post.category=="문학") { %> checked <% } %>><label for="select">문학</label>
+          <input type="radio" id="select2" name="category" value="비문학" <% if (post.category=="비문학") { %> checked <% } %>><label for="select2">비문학</label>
+          <input type="radio" id="select3" name="category" value="질문" <% if (post.category=="질문") { %> checked <% } %>><label for="select3">질문</label>
+          <input type="radio" id="select4" name="category" value="인증" <% if (post.category=="인증") { %> checked <% } %>><label for="select4">인증</label>
+          <input type="radio" id="select6" name="category" value="기타" <% if (post.category=="기타") { %> checked <% } %>><label for="select6">기타</label>
+        </div>
+
         <div class="form-group">
-          <label for="title">Title</label>
+          <label for="title">제목</label>
           <input type="text" id="title" name="title" value="<%= post.title %>" class="form-control">
         </div>
 
         <div class="form-group">
-          <label for="body">Body</label>
+          <label for="body">내용</label>
             <textarea id="body" name="description" rows="5" class="form-control"><%= post.description %></textarea>
         </div>
 
         <div>
-          <a class="btn btn-primary" href="/posts/<%= post.id %>">Back</a>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <a class="btn btn-primary" href="/posts/<%= post.id %>">취소</a>
+          <button type="submit" class="btn btn-primary">등록하기</button>
         </div>
 
       </form>

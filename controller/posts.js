@@ -7,8 +7,8 @@ export async function index(req, res) {
 
 export async function create(req, res) {
   console.log("req.body: ", req.body);
-  const { title, description } = req.body;
-  await postsRepository.create(title, description);
+  const { title, description, category } = req.body;
+  await postsRepository.create(title, description, category);
   res.redirect("/posts");
 }
 
@@ -26,8 +26,8 @@ export async function edit(req, res) {
 export async function update(req, res) {
   const id = req.params.id;
   req.body.updatedAt = new Date();
-  const { title, description, updatedAt } = req.body;
-  await postsRepository.update(id, title, description, updatedAt);
+  const { title, description, category, updatedAt } = req.body;
+  await postsRepository.update(id, title, description, category, updatedAt);
   res.redirect("/posts/" + req.params.id);
 }
 
