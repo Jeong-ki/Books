@@ -68,3 +68,7 @@ body {
   padding: 4px 10px;
   border-radius: 5px 5px 5px 5px;
 }
+
+.user-form {
+  width: 400px;
+}
