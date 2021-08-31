@@ -8,11 +8,15 @@ const router = express.Router();
 router.get("/signUp", function(req, res){
   res.render('users/signUp');
 });
-router.post("/", usersController.create);
+router.post("/", usersController.signup);
 
 // login
 router.get("/login", function(req, res) {
   res.render('users/login');
-})
+});
+router.post("/login", usersController.login);
+
+// show
+router.get("/:nickname", usersController.show);
 
 export default router;

@@ -10,12 +10,12 @@
 
       <h3 class="mb-3">Login</h3>
 
-      <form class="user-form" action="/login" method="post">
+      <form class="user-form" action="/users/login" method="post">
 
         <div class="form-group row">
-          <label for="username" class="col-sm-3 col-form-label">Username</label>
+          <label for="username" class="col-sm-3 col-form-label">Email</label>
           <div class="col-sm-9">
-            <input type="text" id="username" name="username" value="" class="form-control">
+            <input type="text" id="email" name="email" value="<%= locals.email %>" class="form-control">
           </div>
         </div>
 

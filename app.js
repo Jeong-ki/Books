@@ -5,7 +5,7 @@ import userRouter from "./router/users.js";
 import path from "path";
 const __dirname = path.resolve();
 import methodOverride from "method-override";
-// var methodOverride = require('method-override');
+import cookieParser from "cookie-parser";
 
 const app = express();
 
@@ -14,6 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended : true}));
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride('_method'));
+app.use(cookieParser());
 
 app.use("/", homeRouter);
 app.use("/posts", postRouter);
