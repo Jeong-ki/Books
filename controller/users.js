@@ -22,7 +22,8 @@ export async function signup(req, res) {
   const userId = await usersRepository.create({email, nickname, password:hashed});
   const token = createJwtToken(userId);
   console.log("signUp token: ", token);
-  res.redirect("/", { token: token });
+  res.cookie('token', token);
+  res.redirect("/");
 }
 
 export async function login(req, res) {
@@ -35,9 +36,9 @@ export async function login(req, res) {
   if(!isValidPassword) {
     return res.status(401).json({ message: 'Invalid user or password' });
   }
-  const token = createJwtToken(user.email);
-  console.log("login token: ", token);
-  console.log("login user:", user);
+  const token = createJwtToken(user.nickname);
+  // console.log("login token: ", token);
+  // console.log("login user:", user);
   res.cookie('token', token);
   res.redirect("/");
 }

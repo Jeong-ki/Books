@@ -16,8 +16,8 @@
         <li class="nav-item"><a href="/posts" class="nav-link">게시판</a></li>
       </ul>
       <ul class="navbar-nav ml-auto">
-        <% if(locals.token){ %> 
-          <li class="nav-item"><a href="/users/<%= locals.user.nickname %>" class="nav-link">My Account</a></li>
+        <% if(locals.user){ %> 
+          <li class="nav-item"><a href="/users/<%= locals.user.id %>" class="nav-link">My Account</a></li>
           <li class="nav-item"><a href="/logout" class="nav-link">Logout</a></li>
         <% } else { %>
           <li class="nav-item"><a href="/users/signUp" class="nav-link">Sign Up</a></li>
