@@ -1,4 +1,6 @@
 import * as postsRepository from "../data/posts.js";
+import jwt from "jsonwebtoken";
+const jwtSecretKey = 'lk;jasf!wejaf!@$ks%dnf^&$jweoiruaADFEWGag';
 
 export async function index(req, res) {
   const data = await postsRepository.getAll();
@@ -6,9 +8,9 @@ export async function index(req, res) {
 }
 
 export async function create(req, res) {
-  console.log("req.body: ", req.body);
+  const author = res.locals.user.id;
   const { title, description, category } = req.body;
-  await postsRepository.create(title, description, category);
+  await postsRepository.create(title, description, category, author);
   res.redirect("/posts");
 }
 

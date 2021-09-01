@@ -19,4 +19,11 @@ router.post("/login", usersController.login);
 // show
 router.get("/:nickname", usersController.show);
 
+// edit
+router.get("/:nickname/edit", usersController.edit);
+router.put("/:nickname", usersController.update);
+
+// delete
+router.delete("/:nickname", usersController.destory);
+
 export default router;

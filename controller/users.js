@@ -19,8 +19,8 @@ export async function signup(req, res) {
     res.sendStatus(403);
   }
   const hashed = await bcrypt.hash(password, bcryptSaltRounds);
-  const userId = await usersRepository.create({email, nickname, password:hashed});
-  const token = createJwtToken(userId);
+  await usersRepository.create({email, nickname, password:hashed});
+  const token = createJwtToken(nickname);
   console.log("signUp token: ", token);
   res.cookie('token', token);
   res.redirect("/");
@@ -30,11 +30,12 @@ export async function login(req, res) {
   const { email, password } = req.body;
   const user = await usersRepository.findByEmail(email);
   if(!user) {
-    return res.status(401).json({ message: 'Invalid user or password' });
+    return res.render("users/login", { message: '* Invalid user or password' });
   }
   const isValidPassword = await bcrypt.compare(password, user.password);
+  console.log(password, user.password);
   if(!isValidPassword) {
-    return res.status(401).json({ message: 'Invalid user or password' });
+    return res.render("users/login", { message: '* Invalid user or password' });
   }
   const token = createJwtToken(user.nickname);
   // console.log("login token: ", token);
@@ -43,11 +44,49 @@ export async function login(req, res) {
   res.redirect("/");
 }
 
-function createJwtToken(id) {
-  return jwt.sign({ id }, jwtSecretKey, { expiresIn: jwtExpiresInDays });
+export async function show(req, res){
+  if(req.params.nickname){
+    const nickname = req.params.nickname;
+    const me = await usersRepository.findByNickname(nickname);
+    res.render("users/show", { me: me });
+  } else {
+    res.redirect("/"); // ??
+  }
 }
 
-export async function show(req, res){
+export async function edit(req, res) {
+  const nickname = req.params.nickname;
+  const me = await usersRepository.findByNickname(nickname);
+  res.render("users/edit", { me: me });
+}
+
+export async function update(req, res) {
+  const currentNickname = req.params.nickname;
+  const { currentPassword, email, nickname, newPassword, passwordConfirmation } = req.body;
   console.log(req.body);
-  res.render("users/show", { user: user });
+  const now = await usersRepository.findByNickname(currentNickname);
+  const found = await usersRepository.findByEmail(email);
+  if(found) {
+    return res.status(409).json({ message: `${email} already exists` });
+  }
+  if(newPassword !== passwordConfirmation) {
+    return res.status(403).json({ message: 'wrong confirmation' });
+  }
+  const isValidPassword = await bcrypt.compare(currentPassword, now.password);
+  if(!isValidPassword) {
+    return res.status(403).json({ message: 'wrong current password' });
+  }
+  const hashed = await bcrypt.hash(newPassword, bcryptSaltRounds);
+  await usersRepository.update({currentNickname, email, nickname, password:hashed});
+  res.redirect('/users/' + nickname);
+}
+
+export async function destory(req, res) {
+  const nickname = req.params.nickname;
+  await usersRepository.destory(nickname);
+  res.clearCookie('token').redirect("/");
+}
+
+function createJwtToken(id) {
+  return jwt.sign({ id }, jwtSecretKey, { expiresIn: jwtExpiresInDays });
 }

@@ -16,12 +16,12 @@
         <li class="nav-item"><a href="/posts" class="nav-link">게시판</a></li>
       </ul>
       <ul class="navbar-nav ml-auto">
-        <% if(locals.user){ %> 
-          <li class="nav-item"><a href="/users/<%= locals.user.id %>" class="nav-link">My Account</a></li>
-          <li class="nav-item"><a href="/logout" class="nav-link">Logout</a></li>
+        <% if(locals.islogined){ %> 
+          <li class="nav-item"><a href="/users/<%= locals.user.id %>" class="nav-link">내 정보</a></li>
+          <li class="nav-item"><a href="/logout" class="nav-link">로그아웃</a></li>
         <% } else { %>
-          <li class="nav-item"><a href="/users/signUp" class="nav-link">Sign Up</a></li>
-          <li class="nav-item"><a href="/users/login" class="nav-link">Login</a></li>
+          <li class="nav-item"><a href="/users/signUp" class="nav-link">회원가입</a></li>
+          <li class="nav-item"><a href="/users/login" class="nav-link">로그인</a></li>
         <% } %>
       </ul>
     </div>

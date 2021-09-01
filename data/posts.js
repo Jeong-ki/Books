@@ -10,11 +10,11 @@ export async function getById(id) {
     .then((result) => result[0][0]);
 }
 
-export async function create(title, description, category) {
+export async function create(title, description, category, author) {
   return db
     .execute(
-      "INSERT INTO posts (title, description, category) VALUES(?, ?, ?)",
-      [title, description, category]
+      "INSERT INTO posts (title, description, category, author) VALUES(?, ?, ?, ?)",
+      [title, description, category, author]
     )
     .then((result) => getById(result[0].insertId));
 }

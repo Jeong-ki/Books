@@ -16,6 +16,7 @@
           <tr>
             <th scope="col" class="cate">분류</th>
             <th scope="col">제목</th>
+            <th scope="col" class="author">글쓴이</th>
             <th scope="col" class="date">작성일</th>
           </tr>
         </thead>
@@ -33,6 +34,9 @@
               </td>
               <td>
                 <a href="/posts/<%= post.id %>"><div class="ellipsis"><%= post.title %></div></a>
+              </td>
+              <td class="author">
+                <div class="ellipsis"><%= post.author %></div>
               </td>
               <td class="date">
                 <span data-date="<%= post.createdAt %>"></span>

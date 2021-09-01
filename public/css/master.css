@@ -72,3 +72,7 @@ body {
 .user-form {
   width: 400px;
 }
+
+.wrong {
+  color: rgb(204, 28, 28);
+}
