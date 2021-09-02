@@ -46,11 +46,15 @@
         </tbody>
 
       </table>
-
-      <div>
-        <a class="btn btn-primary" href="/posts/create">글쓰기</a>
-      </div>
-
+      <% if(locals.islogined){ %> 
+        <div>
+          <a class="btn btn-primary" href="/posts/create">글쓰기</a>
+        </div>
+      <% } else { %>
+        <div>
+          <a class="btn btn-primary" href="/posts" onclick="confirm('로그인 후 작성가능합니다.')">글쓰기</a>
+        </div>
+      <% } %>
     </div>
   </body>
 </html>
