@@ -1,12 +1,15 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import * as usersRepository from "../data/users.js";
-//import cookieParser from "cookie-parser";
+import * as postsRepository from "../data/posts.js";
+import { config } from "../config.js";
+
+
 
 // configuration
-const jwtSecretKey = 'lk;jasf!wejaf!@$ks%dnf^&$jweoiruaADFEWGag';
-const jwtExpiresInDays = '2d';
-const bcryptSaltRounds = 12;
+const jwtSecretKey = config.jwt.SecretKey;
+const jwtExpiresInDays = config.jwt.expiresSec;
+const bcryptSaltRounds = config.jwt.bcryptSoltRound;
 
 export async function signup(req, res) {
   console.log("req.body: ", req.body);
@@ -45,10 +48,12 @@ export async function login(req, res) {
 }
 
 export async function show(req, res){
+  console.log(req.params);
   if(req.params.nickname){
     const nickname = req.params.nickname;
     const me = await usersRepository.findByNickname(nickname);
-    res.render("users/show", { me: me });
+    const data = await postsRepository.getByAuthor(nickname);
+    res.render("users/show", { me: me, posts: data });
   } else {
     res.redirect("/"); // ??
   }
@@ -77,7 +82,13 @@ export async function update(req, res) {
     return res.status(403).json({ message: 'wrong current password' });
   }
   const hashed = await bcrypt.hash(newPassword, bcryptSaltRounds);
+  console.log("currentNickname: ", currentNickname, "nickname: ", nickname);
+  await postsRepository.updateAuthor(nickname, currentNickname);
   await usersRepository.update({currentNickname, email, nickname, password:hashed});
+  res.clearCookie('token');
+  const token = createJwtToken(nickname);
+  console.log("update token: ", token);
+  res.cookie('token', token);
   res.redirect('/users/' + nickname);
 }
 

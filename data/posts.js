@@ -10,6 +10,12 @@ export async function getById(id) {
     .then((result) => result[0][0]);
 }
 
+export async function getByAuthor(author) {
+  return db
+    .execute("SELECT * FROM posts WHERE author=?", [author])
+    .then((result) => result[0]);
+}
+
 export async function create(title, description, category, author) {
   return db
     .execute(
@@ -26,6 +32,15 @@ export async function update(id, title, description, category, updatedAt) {
       [title, description, category, updatedAt, id]
     )
     .then(() => getById(id));
+}
+
+export async function updateAuthor(nickname, currentNickname) {
+  return db
+    .execute(
+      "UPDATE posts SET author=? WHERE author=?",
+      [nickname, currentNickname]
+    )
+    .then(() => getByAuthor(nickname));
 }
 
 export async function destory(id) {

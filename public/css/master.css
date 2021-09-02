@@ -76,3 +76,7 @@ body {
 .wrong {
   color: rgb(204, 28, 28);
 }
+
+.mybody {
+  margin-top: 30px;
+}

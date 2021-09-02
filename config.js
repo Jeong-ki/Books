@@ -16,4 +16,9 @@ export const config = {
     database: required("DB_DATABASE"),
     password: required("DB_PASSWORD"),
   },
+  jwt: {
+    SecretKey: required("JWT_SECRET"),
+    expiresSec: required("JWT_EXPIRES_SEC"),
+    bcryptSoltRound: required("BCRYPT_SALT_ROUNDS"),
+  }
 };
