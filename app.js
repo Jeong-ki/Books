@@ -7,7 +7,9 @@ const __dirname = path.resolve();
 import methodOverride from "method-override";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
-const jwtSecretKey = 'lk;jasf!wejaf!@$ks%dnf^&$jweoiruaADFEWGag';
+import { config } from "./config.js";
+
+const jwtSecretKey = config.jwt.SecretKey;
 
 const app = express();
 
@@ -22,9 +24,14 @@ app.use(function(req,res,next){
   console.log(req.cookies);
   if(req.cookies.token){
     const clientToken = req.cookies.token;
-    let decoded = jwt.verify(clientToken, jwtSecretKey);  // jwt 유효한지검사, 디코딩
-    res.locals.islogined = true;
-    res.locals.user = decoded;
+    try {
+      let decoded = jwt.verify(clientToken, jwtSecretKey);  // jwt 유효한지검사, 디코딩
+      res.locals.islogined = true;
+      res.locals.user = decoded;
+    } catch (TokenExpiredError) {
+      console.log("토큰 만료: ", TokenExpiredError);
+      return res.status(403);
+    }
   }
   next();
 });

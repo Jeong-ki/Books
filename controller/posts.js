@@ -1,11 +1,23 @@
 import * as postsRepository from "../data/posts.js";
-import * as usersRepository from "../data/users.js";
-import jwt from "jsonwebtoken";
-const jwtSecretKey = 'lk;jasf!wejaf!@$ks%dnf^&$jweoiruaADFEWGag';
 
 export async function index(req, res) {
-  const data = await postsRepository.getAll();
-  res.render("posts/index", { posts: data });
+  console.log("req.query: ", req.query);
+  let page = Math.max(1, parseInt(req.query.page));
+  let limit = Math.max(1, parseInt(req.query.limit)); // 한 페이지당 보여줄 게시물 수
+  page = !isNaN(page)?page:1;
+  limit = !isNaN(limit)?limit:10;
+
+  let skip = (page-1)*limit;
+  let count = await postsRepository.countAllPost();  // 전체 게시물 수
+  let maxPage = Math.ceil(count.num/limit); // 전체 페이지 수
+  let posts = await postsRepository.postPage(skip, limit);
+
+  res.render('posts/index', {
+    posts: posts,
+    currentPage: page,
+    maxPage: maxPage,
+    limit: limit
+  });
 }
 
 export async function create(req, res) {

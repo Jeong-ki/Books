@@ -4,12 +4,9 @@ import * as usersRepository from "../data/users.js";
 import * as postsRepository from "../data/posts.js";
 import { config } from "../config.js";
 
-
-
-// configuration
 const jwtSecretKey = config.jwt.SecretKey;
 const jwtExpiresInDays = config.jwt.expiresSec;
-const bcryptSaltRounds = config.jwt.bcryptSoltRound;
+const bcryptSaltRounds = parseInt(config.jwt.bcryptSoltRound);
 
 export async function signup(req, res) {
   console.log("req.body: ", req.body);

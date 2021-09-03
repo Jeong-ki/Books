@@ -4,6 +4,12 @@ export async function getAll() {
   return db.execute("SELECT * FROM posts ORDER BY createdAt DESC").then((result) => result[0]);
 }
 
+export async function postPage(skip, limit) {
+  return db
+  .execute("SELECT * FROM posts ORDER BY createdAt DESC LIMIT ?, ?", [skip+"", limit+""])
+  .then((result) => result[0]);
+}
+
 export async function getById(id) {
   return db
     .execute("SELECT * FROM posts WHERE id=?", [id])
@@ -47,4 +53,10 @@ export async function destory(id) {
   return (
     db.execute("DELETE FROM posts WHERE id=?", [id])
   );
+}
+
+export async function countAllPost() {
+  return (
+    db.execute("SELECT COUNT(*) as num FROM posts")
+    .then((result) => result[0][0]));
 }
