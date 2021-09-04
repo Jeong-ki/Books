@@ -8,6 +8,7 @@ import methodOverride from "method-override";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 import { config } from "./config.js";
+import * as util from "./util.js";
 
 const jwtSecretKey = config.jwt.SecretKey;
 
@@ -37,7 +38,7 @@ app.use(function(req,res,next){
 });
 
 app.use("/", homeRouter);
-app.use("/posts", postRouter);
+app.use("/posts", util.getPostQueryString, postRouter);
 app.use("/users", userRouter);
 
 app.listen(3000);

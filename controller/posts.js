@@ -25,10 +25,10 @@ export async function create(req, res) {
   const { title, description, category } = req.body;
   console.log(title, description, category);
   if(!(title && category)) {
-    res.redirect("/posts/create");
+    res.redirect("/posts/create" + res.locals.getPostQueryString());
   } else {
     await postsRepository.create(title, description, category, author);
-    res.redirect("/posts");
+    res.redirect("/posts" + res.locals.getPostQueryString(false, {page:1}));
   }
 }
 
@@ -45,7 +45,7 @@ export async function edit(req, res) {
   if (res.locals.user.id === post.author) {
     res.render("posts/edit", { post: post });
   } else {
-    res.redirect("/posts/"+id);
+    res.redirect("/posts/"+ id + res.locals.getPostQueryString());
   }
 }
 export async function update(req, res) {
@@ -53,7 +53,7 @@ export async function update(req, res) {
   req.body.updatedAt = new Date();
   const { title, description, category, updatedAt } = req.body;
   await postsRepository.update(id, title, description, category, updatedAt);
-  res.redirect("/posts/" + req.params.id);
+  res.redirect("/posts/" + id + res.locals.getPostQueryString());
 }
 
 export async function destory(req, res) {
@@ -61,8 +61,8 @@ export async function destory(req, res) {
   const post = await postsRepository.getById(id);
   if (res.locals.user.id === post.author) {
     await postsRepository.destory(id);
-    res.redirect('/posts');
+    res.redirect('/posts' + res.locals.getPostQueryString());
   } else {
-    res.redirect("/posts/"+id);
+    res.redirect("/posts");
   }
 }
