@@ -80,3 +80,10 @@ body {
 .mybody {
   margin-top: 30px;
 }
+
+.post-index-tool {
+  max-width: 450px;
+}
+.post-index-tool input[type='text']{
+  max-width: 130px;
+}

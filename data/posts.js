@@ -60,3 +60,16 @@ export async function countAllPost() {
     db.execute("SELECT COUNT(*) as num FROM posts")
     .then((result) => result[0][0]));
 }
+
+// Search
+export async function countSearchPost(title, body) {
+  return (
+    db.execute(`SELECT COUNT(*) as num FROM posts WHERE title like '%${title}%' OR description like '%${body}%'`)
+    .then((result) => result[0][0]));
+}
+
+export async function searchPostPage(title, body, skip, limit) {
+  return db
+  .execute(`SELECT * FROM posts WHERE title like '%${title}%' OR description like '%${body}%' ORDER BY createdAt DESC LIMIT ?, ?`, [skip+"", limit+""])
+  .then((result) => result[0]);
+}

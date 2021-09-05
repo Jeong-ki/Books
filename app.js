@@ -22,7 +22,6 @@ app.use(methodOverride('_method'));
 app.use(cookieParser());
 
 app.use(function(req,res,next){
-  console.log(req.cookies);
   if(req.cookies.token){
     const clientToken = req.cookies.token;
     try {
@@ -31,7 +30,7 @@ app.use(function(req,res,next){
       res.locals.user = decoded;
     } catch (TokenExpiredError) {
       console.log("토큰 만료: ", TokenExpiredError);
-      return res.status(403);
+      res.clearCookie('token').redirect("/");
     }
   }
   next();
