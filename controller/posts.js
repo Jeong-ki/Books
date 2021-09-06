@@ -1,4 +1,5 @@
 import * as postsRepository from "../data/posts.js";
+import * as userRepository from "../data/users.js";
 
 export async function index(req, res) {
   console.log("req.query: ", req.query);
@@ -8,16 +9,18 @@ export async function index(req, res) {
   limit = !isNaN(limit)?limit:10;
 
   let searchQuery = createSearchQuery(req.query);
+  console.log("searchQuery: ", searchQuery);
   let count;
   let posts;
   let skip = (page-1)*limit;
 
   if(Object.keys(searchQuery).length) {  // Searchquery가 있으면 실행
-    let { title, body } = searchQuery.postQueries;
+    let { title, body, author } = searchQuery.postQueries;
     let sTitle = title ? title : "No Title...";
     let sBody = body ? body : "No Description...";
-    count = await postsRepository.countSearchPost(sTitle, sBody);
-    posts = await postsRepository.searchPostPage(sTitle, sBody, skip, limit);
+    let sAuthor = author ? author : "No Author...";
+    count = await postsRepository.countSearchPost(sTitle, sBody, sAuthor);
+    posts = await postsRepository.searchPostPage(sTitle, sBody, sAuthor, skip, limit);
   } else {
     count = await postsRepository.countAllPost();  // 전체 게시물 수
     posts = await postsRepository.postPage(skip, limit);
@@ -87,12 +90,15 @@ function createSearchQuery(queries){
     let searchTypes = queries.searchType.toLowerCase().split(',');
     let postQueries = {};
     if(searchTypes.indexOf('title')>=0){
-      //postQueries.push({ title: queries.searchText });
       postQueries.title = queries.searchText;
     }
     if(searchTypes.indexOf('body')>=0){
       postQueries.body = queries.searchText;
-      // postQueries.push({ body: queries.searchText });
+    }
+    if(searchTypes.indexOf('author!')>=0){
+      postQueries.author = queries.searchText;
+    } else if(searchTypes.indexOf('author')>=0) {
+      postQueries.author = queries.searchText;
     }
     console.log(Object.keys(postQueries).length);
     if(Object.keys(postQueries).length > 0) searchQuery = {postQueries};

@@ -62,14 +62,14 @@ export async function countAllPost() {
 }
 
 // Search
-export async function countSearchPost(title, body) {
+export async function countSearchPost(title, body, author) {
   return (
-    db.execute(`SELECT COUNT(*) as num FROM posts WHERE title like '%${title}%' OR description like '%${body}%'`)
+    db.execute(`SELECT COUNT(*) as num FROM posts WHERE title like '%${title}%' OR description like '%${body}%' OR author like '%${author}%'`)
     .then((result) => result[0][0]));
 }
 
-export async function searchPostPage(title, body, skip, limit) {
+export async function searchPostPage(title, body, author, skip, limit) {
   return db
-  .execute(`SELECT * FROM posts WHERE title like '%${title}%' OR description like '%${body}%' ORDER BY createdAt DESC LIMIT ?, ?`, [skip+"", limit+""])
+  .execute(`SELECT * FROM posts WHERE title like '%${title}%' OR description like '%${body}%' OR author like '%${author}%' ORDER BY createdAt DESC LIMIT ?, ?`, [skip+"", limit+""])
   .then((result) => result[0]);
 }
