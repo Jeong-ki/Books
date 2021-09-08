@@ -47,6 +47,43 @@
         </form>
       </div>
 
+      <h4 class="mt-3">Comments</h4>
+
+      <% if(comments){ %>
+        <div class="mt-3 border-bottom">
+          <% comments.forEach(function(comment) { %>
+            <div class="border-top pt-1 pb-1">
+              <div class="row">
+                <div class="col-3 col-md-2 col-lg-1 pl-4"><%= comment.username %></div>
+                <div class="col-9 col-md-10 col-lg-11">
+                  <div class="comment-show">
+                    <div class="comment-text mb-3"><%= comment.text %></div>
+                    <small class="d-block">
+                      (Created: <span data-date-time="<%= comment.createdAt %>"></span>)
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+
+      <div class="mt-3">
+        <form action="/comments?postId=<%= post.id %><%= getPostQueryString(true) %>" method="post">
+          <fieldset <%= !locals.islogined?'disabled':'' %>>
+            <div class="row">
+              <div class="col-8">
+                <textarea name="text" rows="2" class="form-control"></textarea>
+              </div>
+              <div class="col-4">
+                <button type="submit" class="btn btn-primary h-100 mr-2">Add Comment</button>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+
     </div>
   </body>
 </html>

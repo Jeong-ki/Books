@@ -1,5 +1,5 @@
 import * as postsRepository from "../data/posts.js";
-import * as userRepository from "../data/users.js";
+import * as commentsRepository from "../data/comments.js";
 
 export async function index(req, res) {
   console.log("req.query: ", req.query);
@@ -52,8 +52,9 @@ export async function create(req, res) {
 export async function show(req, res) {
   const id = req.params.id;
   const post = await postsRepository.getById(id);
-  console.log(post);
-  res.render("posts/show", { post: post });
+  const comments = await commentsRepository.getPostId(id);
+  console.log("comments: ", comments);
+  res.render("posts/show", { post: post, comments:comments });
 }
 
 export async function edit(req, res) {

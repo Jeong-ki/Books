@@ -22,7 +22,8 @@ body {
   width: 70px;
 }
 
-.post-body{
+.post-body,
+.comment-text{
   white-space: pre-line; /* 2 */
 }
 .post-info{
