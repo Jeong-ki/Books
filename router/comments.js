@@ -4,8 +4,10 @@ import * as postsRepository from "../data/posts.js";
 
 const router = express.Router();
 
-// comments - create
+// comments
 router.post("/", checkPostId, commentsController.create);
+router.put("/:id", checkPostId, commentsController.update);
+router.delete('/:id', checkPostId, commentsController.destory);
 
 async function checkPostId(req, res, next) {
   let postId = req.query.postId;

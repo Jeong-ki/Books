@@ -53,14 +53,13 @@ export async function show(req, res) {
   const id = req.params.id;
   const post = await postsRepository.getById(id);
   const comments = await commentsRepository.getPostId(id);
-  console.log("comments: ", comments);
-  res.render("posts/show", { post: post, comments:comments });
+  res.render("posts/show", { post: post, comments: comments });
 }
 
 export async function edit(req, res) {
   const id = req.params.id;
-  const post = await postsRepository.getById(id);
-  if (res.locals.user.id === post.author) {
+  const post = await postsRepository.getPostId(id);
+  if (res.locals.user.id === post.username) {
     res.render("posts/edit", { post: post });
   } else {
     res.redirect("/posts/"+ id + res.locals.getPostQueryString());

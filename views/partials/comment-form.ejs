@@ -1,0 +1,17 @@
+<form action="<%= actionUrl %><%= getPostQueryString(true) %>" method="post">
+  <fieldset <%= !locals.islogined?'disabled':'' %>>
+    <div class="row">
+      <div class="col-8">
+        <textarea name="text" rows="2" class="form-control <%= (comment.commentId)?'is-invalid':'' %>"></textarea><%= (comment.commentId) ? comment.text : ""%></textarea>
+      </div>
+      <div class="col-4">
+        <% if(comment.commentId){ %>
+          <button type="submit" class="btn btn-primary h-100 mr-2 pl-4 pr-4">Edit</button>
+          <a href="javascript:void(0)" onclick="$('#comment-<%= comment.commentId %>').removeClass('comment-edit-enabled')">Cancel</a>
+        <% } else { %>
+          <button type="submit" class="btn btn-primary h-100 mr-2">Add Comment</button>
+        <% } %>
+      </div>
+    </div>
+  </fieldset>
+</form>
