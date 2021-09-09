@@ -38,3 +38,9 @@ export async function destoryUpdate(id) {
     )
     .then((result) => result[0][0]);
 }
+
+export async function destory(id) {
+  return (
+    db.execute("DELETE FROM comment WHERE postId=?", [id])
+  );
+}

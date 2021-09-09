@@ -65,7 +65,7 @@ $(function(){
     });
   }
 
-  if(params.searchText && params.searchText.length>=3){
+  if(params.searchText && params.searchText.length>=2){
     $('[data-search-highlight]').each(function(index,element){
       var $element = $(element);
       var searchHighlight = $element.data('search-highlight');

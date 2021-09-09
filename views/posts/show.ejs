@@ -10,8 +10,8 @@
 
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb p-1 pl-2 pr-2">
-          <li class="breadcrumb-item"><a href="/">Home</a></li>
-          <li class="breadcrumb-item"><a href="/posts">Board</a></li>
+          <li class="breadcrumb-item"><a href="/">홈</a></li>
+          <li class="breadcrumb-item"><a href="/posts">게시판</a></li>
           <li class="breadcrumb-item active" aria-current="page"><%= post.title %></li>
         </ol>
       </nav>
@@ -28,6 +28,7 @@
             <div class="post-info card m-2 p-2"> 
               <div class="border-bottom pb-1 mb-1">
                 <span>Author</span> : <span data-search-highlight="author"><%= post.author %></span>
+                <div><span>Views</span> : <span><%= post.views %></span></div>
               </div>
               <div><span>Created</span> : <span data-date-time="<%= post.createdAt %>"></span></div>
               <% if(post.updatedAt) { %>

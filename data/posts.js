@@ -6,8 +6,8 @@ export async function getAll() {
 
 export async function postPage(skip, limit) {
   return db
-  .execute(`SELECT posts.*, COUNT(postId) as commentCount 
-            FROM posts LEFT JOIN comment ON posts.id=comment.postId
+  .execute(`SELECT posts.*, COUNT(postId) as commentCount, @rownum:=@rownum+1 AS num
+            FROM posts LEFT JOIN comment ON posts.id=comment.postId, (SELECT @rownum:=0) TMP
             GROUP BY posts.id
             ORDER BY createdAt DESC LIMIT ?, ?`, [skip+"", limit+""])
   .then((result) => result[0]);
@@ -24,6 +24,15 @@ export async function getByAuthor(author) {
     .execute("SELECT * FROM posts WHERE author=?", [author])
     .then((result) => result[0]);
 }
+
+export async function views(id) {
+  return db
+    .execute(
+      "UPDATE posts SET views = views+1 WHERE id=?",
+      [id]
+    )
+    .then(() => getById(id));
+} 
 
 export async function create(title, description, category, author) {
   return db
@@ -73,8 +82,8 @@ export async function countSearchPost(title, body, author) {
 
 export async function searchPostPage(title, body, author, skip, limit) {
   return db
-  .execute(`SELECT posts.* , count(postId) as commentCount 
-            FROM posts LEFT JOIN comment ON posts.id=comment.postId
+  .execute(`SELECT posts.* , count(postId) as commentCount, @rownum:=@rownum+1 AS num
+            FROM posts LEFT JOIN comment ON posts.id=comment.postId, (SELECT @rownum:=0) TMP
             WHERE title like '%${title}%' OR description like '%${body}%' OR author like '%${author}%' 
             GROUP BY posts.id
             ORDER BY createdAt DESC LIMIT ?, ?`, [skip+"", limit+""])

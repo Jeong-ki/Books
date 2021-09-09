@@ -38,7 +38,6 @@ export async function index(req, res) {
 export async function create(req, res) {
   const author = res.locals.user.id;
   const { title, description, category } = req.body;
-  console.log(title, description, category);
   if(!(title && category)) {
     res.redirect("/posts/create" + res.locals.getPostQueryString());
   } else {
@@ -49,6 +48,7 @@ export async function create(req, res) {
 
 export async function show(req, res) {
   const id = req.params.id;
+  await postsRepository.views(id);
   const post = await postsRepository.getById(id);
   const comments = await commentsRepository.getPostId(id);
   res.render("posts/show", { post: post, comments: comments });
@@ -74,6 +74,12 @@ export async function update(req, res) {
 export async function destory(req, res) {
   const id = req.params.id;
   const post = await postsRepository.getById(id);
+  const comments = await commentsRepository.getPostId(id);
+
+  if(comments) {
+    await commentsRepository.destory(id);
+  }
+
   if (res.locals.user.id === post.author) {
     await postsRepository.destory(id);
     res.redirect('/posts' + res.locals.getPostQueryString());
@@ -84,7 +90,7 @@ export async function destory(req, res) {
 
 function createSearchQuery(queries){
   let searchQuery = {};
-  if(queries.searchType && queries.searchText && queries.searchText.length >= 3){
+  if(queries.searchType && queries.searchText && queries.searchText.length >= 2){
     let searchTypes = queries.searchType.toLowerCase().split(',');
     let postQueries = {};
     if(searchTypes.indexOf('title')>=0){
