@@ -12,11 +12,11 @@ export async function getByCommentId(id) {
     .then((result) => result[0][0]);
 }
 
-export async function create(username, parentComment, text, postId) {
+export async function create(username, text, postId) {
   return db
     .execute(
-      "INSERT INTO comment (username, parentComment, text, postId) VALUES(?, ?, ?, ?)",
-      [username, parentComment, text, postId]
+      "INSERT INTO comment (username, text, postId) VALUES(?, ?, ?)",
+      [username, text, postId]
     )
     .then((result) => result[0][0]);
 }

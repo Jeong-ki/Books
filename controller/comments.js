@@ -5,8 +5,7 @@ export async function create(req, res) {
   const username = res.locals.user.id;
   const postId = post.id;
   const text = req.body.text;
-  const parentComment = null;  // 임시
-  await commentsRepository.create(username, parentComment, text, postId);
+  await commentsRepository.create(username, text, postId);
   res.redirect("/posts/" + post.id + res.locals.getPostQueryString());
 }
 

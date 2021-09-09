@@ -33,9 +33,15 @@
                 <span><%= post.category %></span>
               </td>
               <td>
-                <a href="/posts/<%= post.id %><%= getPostQueryString() %>">
-                  <div data-search-highlight="title" class="ellipsis"><%= post.title %></div></a>
-              </td>
+                <a href="/posts/<%= post.id %><%= getPostQueryString() %>" class="title-container">
+                  <div data-search-highlight="title" class="title-ellipsis ellipsis float-left">
+                    <span class="title-text"><%= post.title %></span>
+                    <% if(post.commentCount){ %>
+                      <small class="title-comments d-inline-block pl-2">[<%= post.commentCount %>]</small>
+                    <% } %>
+                  </div>
+               </a>
+             </td>
               <td class="author">
                 <a href="/posts<%= getPostQueryString(false, { searchType:'author!', searchText:post.author }) %>">
                 <div data-search-highlight="author" class="ellipsis"><%= post.author %></div></a>

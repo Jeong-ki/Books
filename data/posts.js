@@ -6,7 +6,10 @@ export async function getAll() {
 
 export async function postPage(skip, limit) {
   return db
-  .execute("SELECT * FROM posts ORDER BY createdAt DESC LIMIT ?, ?", [skip+"", limit+""])
+  .execute(`SELECT posts.*, COUNT(postId) as commentCount 
+            FROM posts LEFT JOIN comment ON posts.id=comment.postId
+            GROUP BY posts.id
+            ORDER BY createdAt DESC LIMIT ?, ?`, [skip+"", limit+""])
   .then((result) => result[0]);
 }
 
@@ -70,6 +73,10 @@ export async function countSearchPost(title, body, author) {
 
 export async function searchPostPage(title, body, author, skip, limit) {
   return db
-  .execute(`SELECT * FROM posts WHERE title like '%${title}%' OR description like '%${body}%' OR author like '%${author}%' ORDER BY createdAt DESC LIMIT ?, ?`, [skip+"", limit+""])
+  .execute(`SELECT posts.* , count(postId) as commentCount 
+            FROM posts LEFT JOIN comment ON posts.id=comment.postId
+            WHERE title like '%${title}%' OR description like '%${body}%' OR author like '%${author}%' 
+            GROUP BY posts.id
+            ORDER BY createdAt DESC LIMIT ?, ?`, [skip+"", limit+""])
   .then((result) => result[0]);
 }

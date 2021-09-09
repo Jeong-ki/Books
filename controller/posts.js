@@ -2,14 +2,12 @@ import * as postsRepository from "../data/posts.js";
 import * as commentsRepository from "../data/comments.js";
 
 export async function index(req, res) {
-  console.log("req.query: ", req.query);
   let page = Math.max(1, parseInt(req.query.page));
   let limit = Math.max(1, parseInt(req.query.limit)); // 한 페이지당 보여줄 게시물 수
   page = !isNaN(page)?page:1;
   limit = !isNaN(limit)?limit:10;
 
   let searchQuery = createSearchQuery(req.query);
-  console.log("searchQuery: ", searchQuery);
   let count;
   let posts;
   let skip = (page-1)*limit;
