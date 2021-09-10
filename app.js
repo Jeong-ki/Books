@@ -3,6 +3,8 @@ import homeRouter from "./router/home.js";
 import postRouter from "./router/posts.js";
 import userRouter from "./router/users.js";
 import commentRouter from "./router/comments.js";
+import fileRouter from "./router/files.js";
+
 import path from "path";
 const __dirname = path.resolve();
 import methodOverride from "method-override";
@@ -42,5 +44,6 @@ app.use("/", homeRouter);
 app.use("/posts", util.getPostQueryString, postRouter);
 app.use("/users", userRouter);
 app.use("/comments",util.getPostQueryString, commentRouter);
+app.use("/files", fileRouter);
 
 app.listen(3000);

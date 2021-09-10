@@ -24,7 +24,7 @@
             <% if(files) { %>
               <div class="ml-2">
               <% for(let i = 0; i < files.length; i++) { %>
-                <small>📁<%= files[i].originalFileName %> (<%= (files[i].byteSize) %>) &nbsp; </small>
+                <small>📁<a href="/files/<%= files[i].serverFileName %>/<%= files[i].originalFileName %>"><%= files[i].originalFileName %> (<%= (files[i].byteSize) %>)</a>&nbsp;</small>
               <% } %>
               </div>
             <% } %>
