@@ -52,6 +52,11 @@ export async function create(req, res) {
   const author = res.locals.user.id;
   const { title, description, category } = req.body;
   const files = req.files;
+  let haveFile = true;
+
+  if(!(title && category)) {
+    res.redirect("/posts/create" + res.locals.getPostQueryString());
+  }
 
   if (files.length) {
     const lastId = await postsRepository.lastId();
@@ -66,10 +71,11 @@ export async function create(req, res) {
     }
   }
   
-  if(!(title && category)) {
-    res.redirect("/posts/create" + res.locals.getPostQueryString());
+  if(files.length) {
+    await postsRepository.create(title, description, category, author, haveFile);
+    res.redirect("/posts" + res.locals.getPostQueryString(false, { page:1, searchText:'' }));
   } else {
-    await postsRepository.create(title, description, category, author);
+    await postsRepository.create(title, description, category, author, haveFile=false);
     res.redirect("/posts" + res.locals.getPostQueryString(false, { page:1, searchText:'' }));
   }
 }

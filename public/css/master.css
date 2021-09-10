@@ -28,6 +28,7 @@ body {
 }
 .board-table .title-container:hover,
 .board-table .title-container:hover .title-text
+.board-table .title-container:hover .title-attachment
 {
   text-decoration: underline;
 }
@@ -114,3 +115,11 @@ body {
 .comment-edit-enabled .comment-edit {
   display:inherit;
 }
+
+.title-comments {
+  padding-left: .0rem!important;
+}
+.title-attachment {
+  padding-left: .2rem!important;
+}
+
