@@ -23,6 +23,7 @@ app.use(methodOverride('_method'));
 app.use(cookieParser());
 
 app.use(function(req,res,next){
+  res.locals.util = util;
   if(req.cookies.token){
     const clientToken = req.cookies.token;
     try {

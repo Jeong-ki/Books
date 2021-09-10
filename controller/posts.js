@@ -1,5 +1,18 @@
 import * as postsRepository from "../data/posts.js";
 import * as commentsRepository from "../data/comments.js";
+import aws from "aws-sdk";
+import path from "path";
+const __dirname = path.resolve();
+aws.config.loadFromPath(__dirname + "/config/s3.json");
+const s3 = new aws.S3();
+
+let params = {
+  Bucket: "jksbook",
+  Delete: {
+    Objects: null,
+    Quiet: false,
+  },
+};
 
 export async function index(req, res) {
   let page = Math.max(1, parseInt(req.query.page));
@@ -38,6 +51,21 @@ export async function index(req, res) {
 export async function create(req, res) {
   const author = res.locals.user.id;
   const { title, description, category } = req.body;
+  const files = req.files;
+
+  if (files.length) {
+    const lastId = await postsRepository.lastId();
+    const postId = lastId.id + 1;
+    console.log(postId);
+    for (let i = 0; i < files.length; i++) {
+      let originalname = files[i].originalname;
+      let key = files[i].key;
+      let size = files[i].size;
+      let versionId = files[i].versionId;
+      await postsRepository.fileCreate(originalname, key, size, author, postId, versionId);
+    }
+  }
+  
   if(!(title && category)) {
     res.redirect("/posts/create" + res.locals.getPostQueryString());
   } else {
@@ -50,8 +78,16 @@ export async function show(req, res) {
   const id = req.params.id;
   await postsRepository.views(id);
   const post = await postsRepository.getById(id);
+  const files = await postsRepository.getByFiles(id);
   const comments = await commentsRepository.getPostId(id);
-  res.render("posts/show", { post: post, comments: comments });
+  if (files.length) {
+    for (let i = 0; i < files.length; i++) {
+      let byteSize = bytesToSize(files[i].size)
+      files[i].byteSize = byteSize;
+    }
+  }
+  console.log(files);
+  res.render("posts/show", { post: post, comments: comments, files: files });
 }
 
 export async function edit(req, res) {
@@ -108,4 +144,11 @@ function createSearchQuery(queries){
     if(Object.keys(postQueries).length > 0) searchQuery = {postQueries};
   }
   return searchQuery;
+}
+
+function bytesToSize(bytes) {
+  let sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  if (bytes == 0) return '0 Byte';
+  let i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+  return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
 }

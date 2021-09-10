@@ -25,6 +25,12 @@ export async function getByAuthor(author) {
     .then((result) => result[0]);
 }
 
+export async function getByFiles(id) {
+  return db
+    .execute("SELECT * FROM file WHERE postId=?", [id])
+    .then((result) => result[0]);
+}
+
 export async function views(id) {
   return db
     .execute(
@@ -88,4 +94,20 @@ export async function searchPostPage(title, body, author, skip, limit) {
             GROUP BY posts.id
             ORDER BY createdAt DESC LIMIT ?, ?`, [skip+"", limit+""])
   .then((result) => result[0]);
+}
+
+// file
+export async function fileCreate(originalname, key, size, uploadedBy, postId, versionId) {
+  return db
+    .execute(
+      "INSERT INTO file (originalFileName, serverFileName, size, uploadedBy, postId, versionId) VALUES(?, ?, ?, ?, ?, ?)",
+      [originalname, key, size, uploadedBy, postId, versionId]
+    )
+    .then((result) => getById(result[0].insertId));
+}
+
+export async function lastId() {
+  return db
+    .execute("SELECT id FROM posts order by id desc limit 1")
+    .then((result) => result[0][0]);
 }
