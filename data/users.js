@@ -32,7 +32,7 @@ export async function update(user) {
     .then((result) => result[0]);
 }
 
-export async function destory(nickname) {
+export async function destroy(nickname) {
   return (
     db.execute("DELETE FROM users WHERE nickname=?", [nickname])
   );

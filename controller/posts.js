@@ -6,13 +6,8 @@ const __dirname = path.resolve();
 aws.config.loadFromPath(__dirname + "/config/s3.json");
 const s3 = new aws.S3();
 
-let params = {
-  Bucket: "jksbook",
-  Delete: {
-    Objects: null,
-    Quiet: false,
-  },
-};
+
+
 
 export async function index(req, res) {
   let page = Math.max(1, parseInt(req.query.page));
@@ -59,9 +54,9 @@ export async function create(req, res) {
   }
 
   if (files.length) {
+    await postsRepository.create(title, description, category, author, haveFile);
     const lastId = await postsRepository.lastId();
-    const postId = lastId.id + 1;
-    console.log(postId);
+    const postId = lastId.id;
     for (let i = 0; i < files.length; i++) {
       let originalname = files[i].originalname;
       let key = files[i].key;
@@ -69,15 +64,11 @@ export async function create(req, res) {
       let versionId = files[i].versionId;
       await postsRepository.fileCreate(originalname, key, size, author, postId, versionId);
     }
-  }
-  
-  if(files.length) {
-    await postsRepository.create(title, description, category, author, haveFile);
-    res.redirect("/posts" + res.locals.getPostQueryString(false, { page:1, searchText:'' }));
   } else {
     await postsRepository.create(title, description, category, author, haveFile=false);
-    res.redirect("/posts" + res.locals.getPostQueryString(false, { page:1, searchText:'' }));
   }
+
+  res.redirect("/posts" + res.locals.getPostQueryString(false, { page:1, searchText:'' }));
 }
 
 export async function show(req, res) {
@@ -92,38 +83,76 @@ export async function show(req, res) {
       files[i].byteSize = byteSize;
     }
   }
-  console.log(files);
   res.render("posts/show", { post: post, comments: comments, files: files });
 }
 
 export async function edit(req, res) {
   const id = req.params.id;
-  const post = await postsRepository.getPostId(id);
-  if (res.locals.user.id === post.username) {
-    res.render("posts/edit", { post: post });
+  const post = await postsRepository.getById(id);
+  const files = await postsRepository.getByFiles(id);
+
+  if (files.length) {
+    for (let i = 0; i < files.length; i++) {
+      let byteSize = bytesToSize(files[i].size)
+      files[i].byteSize = byteSize;
+    }
+  }
+  if (res.locals.user.id === post.author) {
+    res.render("posts/edit", { post: post, files: files });
   } else {
     res.redirect("/posts/"+ id + res.locals.getPostQueryString());
   }
 }
+
 export async function update(req, res) {
+  const uploadedBy = res.locals.user.id;
   const id = req.params.id;
   req.body.updatedAt = new Date();
   const { title, description, category, updatedAt } = req.body;
-  await postsRepository.update(id, title, description, category, updatedAt);
+  const beforeFile = req.body.files;
+  const files = req.files;
+  console.log("beforeFiles", beforeFile);
+  console.log("newfiles", files);
+  let haveFile = true;
+
+  if(!(title && category)) {
+    res.redirect("/posts/" + id + res.locals.getPostQueryString());
+  }
+
+  if (files.length) {
+    // S3파일 삭제 후 DB삭제
+    s3_delete(id);
+    await postsRepository.fileDestroy(id);
+
+    for (let i = 0; i < files.length; i++) {
+      let originalname = files[i].originalname;
+      let key = files[i].key;
+      let size = files[i].size;
+      let versionId = files[i].versionId;
+      await postsRepository.fileCreate(originalname, key, size, uploadedBy, id, versionId);
+    }
+    await postsRepository.update(id, title, description, category, updatedAt, haveFile);
+  } else if(beforeFile){
+    await postsRepository.update(id, title, description, category, updatedAt, haveFile);
+  } else {
+    s3_delete(id);
+    await postsRepository.fileDestroy(id);
+    await postsRepository.update(id, title, description, category, updatedAt, haveFile=false);
+  }
+
   res.redirect("/posts/" + id + res.locals.getPostQueryString());
 }
 
-export async function destory(req, res) {
+export async function destroy(req, res) {
   const id = req.params.id;
   const post = await postsRepository.getById(id);
   const comments = await commentsRepository.getPostId(id);
 
-  if(comments) {
-    await commentsRepository.destory(id);
-  }
-
   if (res.locals.user.id === post.author) {
-    await postsRepository.destory(id);
+    s3_delete(id);
+    await postsRepository.destroy(id);
+    await postsRepository.fileDestroy(id);
+    if(comments) await commentsRepository.destroy(id);
     res.redirect('/posts' + res.locals.getPostQueryString());
   } else {
     res.redirect("/posts");
@@ -157,4 +186,17 @@ function bytesToSize(bytes) {
   if (bytes == 0) return '0 Byte';
   let i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
   return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+}
+
+async function s3_delete(id) {
+  let params = {
+    Bucket: "jksbook", 
+    Delete: { Objects: null, Quiet: false, },
+  };
+  const filesKeyValue = await postsRepository.filesKeyValue(id);
+  params.Delete.Objects = filesKeyValue;
+  s3.deleteObjects(params, function(err, data) {
+    if (err) console.log("삭제시 에러: " + err, err.stack); // an error occurred
+    else console.log("삭제: ", data);  // successful response
+  });
 }

@@ -81,9 +81,9 @@ export async function update(req, res) {
   res.redirect('/users/' + nickname);
 }
 
-export async function destory(req, res) {
+export async function destroy(req, res) {
   const nickname = req.params.nickname;
-  await usersRepository.destory(nickname);
+  await usersRepository.destroy(nickname);
   res.clearCookie('token').redirect("/");
 }
 

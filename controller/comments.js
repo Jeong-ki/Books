@@ -19,10 +19,10 @@ export async function update(req, res) {
   res.redirect("/posts/" + post.id + res.locals.getPostQueryString());
 }
 
-export async function destory(req, res) {
+export async function destroy(req, res) {
   console.log(req.params.id);
   let post = res.locals.post;
   const id = req.params.id;
-  await commentsRepository.destoryUpdate(id);
+  await commentsRepository.destroyUpdate(id);
   res.redirect("/posts/" + post.id + res.locals.getPostQueryString());
 }

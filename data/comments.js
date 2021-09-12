@@ -30,7 +30,7 @@ export async function update(text, updatedAt, id) {
     .then((result) => result[0][0]);
 }
 
-export async function destoryUpdate(id) {
+export async function destroyUpdate(id) {
   return db
     .execute(
       "UPDATE comment SET isDeleted=1 WHERE commentId=?",
@@ -39,7 +39,7 @@ export async function destoryUpdate(id) {
     .then((result) => result[0][0]);
 }
 
-export async function destory(id) {
+export async function destroy(id) {
   return (
     db.execute("DELETE FROM comment WHERE postId=?", [id])
   );

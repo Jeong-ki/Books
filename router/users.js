@@ -24,6 +24,6 @@ router.get("/:nickname/edit", usersController.edit);
 router.put("/:nickname", usersController.update);
 
 // delete
-router.delete("/:nickname", usersController.destory);
+router.delete("/:nickname", usersController.destroy);
 
 export default router;

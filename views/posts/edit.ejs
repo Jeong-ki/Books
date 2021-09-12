@@ -17,7 +17,7 @@
         </ol>
       </nav>
 
-      <form action="/posts/<%= post.id %>?_method=put<%= getPostQueryString(true) %>" method="post">
+      <form action="/posts/<%= post.id %>?_method=put<%= getPostQueryString(true) %>" enctype="multipart/form-data" method="post">
 
         <div class="select">
           <label class="category" for="title">카테고리</label>
@@ -31,6 +31,21 @@
         <div class="form-group">
           <label for="title">제목</label>
           <input type="text" id="title" name="title" value="<%= post.title %>" class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="title">파일첨부</label>
+          <input type="hidden" id="attachment" name="files" value="<% if(files[0]) { %><% for(let i=0; i < files.length; i++) { %><%= files[i].originalFileName %><% } %><% } else{ %>''<% } %>"> 
+          <% if(files[0]){ %>
+            <div class="input-group mb-3" id="currentAttachemnt">
+              <input type="text" class="form-control" value=
+              "<% for(let i=0; i < files.length; i++) { %> <%= files[i].originalFileName %>   <% } %>" readonly />
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" onclick="$('#attachment').val('');$('#currentAttachemnt').hide();$('#newAttachment').removeClass('d-none');">Delete</button>
+              </div>
+            </div>
+          <% } %>
+          <input type="file" id="newAttachment" class="form-control-file <%= files[0]?'d-none':'' %>" name="newFiles" multiple>
         </div>
 
         <div class="form-group">

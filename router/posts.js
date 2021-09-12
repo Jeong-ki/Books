@@ -19,9 +19,9 @@ router.get("/:id", postsController.show);
 
 // edit
 router.get("/:id/edit", postsController.edit);
-router.put("/:id", postsController.update);
+router.put("/:id", upload.array("newFiles", 4), postsController.update);
 
 // delete
-router.delete('/:id', postsController.destory);
+router.delete('/:id', postsController.destroy);
 
 export default router;

@@ -25,12 +25,6 @@ export async function getByAuthor(author) {
     .then((result) => result[0]);
 }
 
-export async function getByFiles(id) {
-  return db
-    .execute("SELECT * FROM file WHERE postId=?", [id])
-    .then((result) => result[0]);
-}
-
 export async function views(id) {
   return db
     .execute(
@@ -49,11 +43,11 @@ export async function create(title, description, category, author, haveFile) {
     .then((result) => getById(result[0].insertId));
 }
 
-export async function update(id, title, description, category, updatedAt) {
+export async function update(id, title, description, category, updatedAt, haveFile) {
   return db
     .execute(
-      "UPDATE posts SET title=?, description=?, category=?, updatedAt=? WHERE id=?",
-      [title, description, category, updatedAt, id]
+      "UPDATE posts SET title=?, description=?, category=?, updatedAt=?, haveFile=? WHERE id=?",
+      [title, description, category, updatedAt, haveFile, id]
     )
     .then(() => getById(id));
 }
@@ -67,7 +61,7 @@ export async function updateAuthor(nickname, currentNickname) {
     .then(() => getByAuthor(nickname));
 }
 
-export async function destory(id) {
+export async function destroy(id) {
   return (
     db.execute("DELETE FROM posts WHERE id=?", [id])
   );
@@ -80,6 +74,12 @@ export async function countAllPost() {
 }
 
 // Search
+export async function getByFiles(id) {
+  return db
+    .execute("SELECT * FROM file WHERE postId=?", [id])
+    .then((result) => result[0]);
+}
+
 export async function countSearchPost(title, body, author) {
   return (
     db.execute(`SELECT COUNT(*) as num FROM posts WHERE title like '%${title}%' OR description like '%${body}%' OR author like '%${author}%'`)
@@ -110,4 +110,16 @@ export async function lastId() {
   return db
     .execute("SELECT id FROM posts order by id desc limit 1")
     .then((result) => result[0][0]);
+}
+
+export async function filesKeyValue(id) {
+  return db
+    .execute("SELECT serverFileName as 'Key', versionId as 'VersionId' FROM file WHERE postId=?", [id])
+    .then((result) => result[0]);
+}
+
+export async function fileDestroy(id) {
+  return (
+    db.execute("DELETE FROM file WHERE postId=?", [id])
+  );
 }
