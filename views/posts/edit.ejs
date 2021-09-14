@@ -41,7 +41,7 @@
               <input type="text" class="form-control" value=
               "<% for(let i=0; i < files.length; i++) { %> <%= files[i].originalFileName %>   <% } %>" readonly />
               <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button" onclick="$('#attachment').val('');$('#currentAttachemnt').hide();$('#newAttachment').removeClass('d-none');">Delete</button>
+                <button class="btn btn-outline-secondary" type="button" onclick="$('#attachment').val('');$('#currentAttachemnt').hide();$('#newAttachment').removeClass('d-none');">파일삭제</button>
               </div>
             </div>
           <% } %>

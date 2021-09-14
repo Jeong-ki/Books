@@ -1,6 +1,7 @@
 body {
   font-family: 'Open Sans', sans-serif;
 }
+
 .breadcrumb-item {
   font-size: 0.8em !important;
 }
@@ -122,4 +123,3 @@ body {
 .title-attachment {
   padding-left: .2rem!important;
 }
-
