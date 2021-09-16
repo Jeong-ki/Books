@@ -47,7 +47,7 @@ export async function show(req, res){
     const data = await postsRepository.getByAuthor(nickname);
     res.render("users/show", { me: me, posts: data });
   } else {
-    res.redirect("/"); // ??
+    res.redirect("/");
   }
 }
 

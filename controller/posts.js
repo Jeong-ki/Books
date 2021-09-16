@@ -6,9 +6,6 @@ const __dirname = path.resolve();
 aws.config.loadFromPath(__dirname + "/config/s3.json");
 const s3 = new aws.S3();
 
-
-
-
 export async function index(req, res) {
   let page = Math.max(1, parseInt(req.query.page));
   let limit = Math.max(1, parseInt(req.query.limit)); // 한 페이지당 보여줄 게시물 수
@@ -91,14 +88,17 @@ export async function edit(req, res) {
   const post = await postsRepository.getById(id);
   const files = await postsRepository.getByFiles(id);
 
+  console.log(res.locals.user);
   if (files.length) {
     for (let i = 0; i < files.length; i++) {
       let byteSize = bytesToSize(files[i].size)
       files[i].byteSize = byteSize;
     }
   }
-  if (res.locals.user.id === post.author) {
-    res.render("posts/edit", { post: post, files: files });
+  if(res.locals.user){
+    if (res.locals.user.id === post.author) {
+      res.render("posts/edit", { post: post, files: files });
+    }
   } else {
     res.redirect("/posts/"+ id + res.locals.getPostQueryString());
   }
@@ -111,8 +111,9 @@ export async function update(req, res) {
   const { title, description, category, updatedAt } = req.body;
   const beforeFile = req.body.files;
   const files = req.files;
-  console.log("beforeFiles", beforeFile);
+  console.log("beforeFiles", beforeFile.length);
   console.log("newfiles", files);
+  console.log(id);
   let haveFile = true;
 
   if(!(title && category)) {
@@ -132,9 +133,10 @@ export async function update(req, res) {
       await postsRepository.fileCreate(originalname, key, size, uploadedBy, id, versionId);
     }
     await postsRepository.update(id, title, description, category, updatedAt, haveFile);
-  } else if(beforeFile){
+  } else if(beforeFile.length){
     await postsRepository.update(id, title, description, category, updatedAt, haveFile);
   } else {
+    console.log("파일 삭제")
     s3_delete(id);
     await postsRepository.fileDestroy(id);
     await postsRepository.update(id, title, description, category, updatedAt, haveFile=false);
@@ -196,7 +198,7 @@ async function s3_delete(id) {
   const filesKeyValue = await postsRepository.filesKeyValue(id);
   params.Delete.Objects = filesKeyValue;
   s3.deleteObjects(params, function(err, data) {
-    if (err) console.log("삭제시 에러: " + err, err.stack); // an error occurred
+    if (err) console.log("삭제시 에러(삭제파일x): " + err, err.stack); // an error occurred
     else console.log("삭제: ", data);  // successful response
   });
 }
